@@ -1,0 +1,13 @@
+# Local development files
+.DS_Store
+node_modules/
+*.log
+.env
+.env.*
+!.env.example
+playwright-report/
+test-results/
+# Production configuration must never be included in this public site.
+*.vcl
+vcl-source.js
+private/

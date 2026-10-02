@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101310">
+  <meta name="description" content="Board the Varnish Express: an interactive railway journey through HTTP caching, Nginx, Varnish, and Magento using illustrative request and response policies.">
+  <title>The Varnish Express — Every header. Every stop.</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23101310'/%3E%3Cpath d='M12 7h16v21H12zM10 34l5-7m15 7-5-7M15 12h10v7H15z' stroke='%23d4eda0' stroke-width='2' fill='none'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;550;600;650;700&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script defer src="journey-data.js"></script>
+  <script defer src="app.js"></script>
+  <script defer src="workbench.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#journey">Skip to the interactive journey</a>
+  <header class="site-header">
+    <a class="brand" href="#top"><span class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="8" y="3" width="16" height="21" rx="5"/><path d="M12 8h8v7h-8zM7 30l6-6m12 6-6-6M12 20h1m6 0h1"/></svg></span><span>Varnish<span class="brand-serif">Express</span></span></a>
+    <nav aria-label="Main navigation"><a href="#journey">The journey</a><a href="#workbench">Rule workbench</a><a href="#field-guide">Field guide</a></nav>
+    <a class="source-button" href="#field-guide">Learning guide <span class="version">7.5</span></a>
+  </header>
+
+  <main id="top">
+    <section class="hero page-width" aria-labelledby="hero-title">
+      <div class="hero-copy"><p class="eyebrow"><span class="line-marker">V</span> AN INSIDE TRACK TO HTTP CACHING</p><h1 id="hero-title">Every header.<br><em>Every stop.</em></h1><p class="hero-description">Hop aboard an HTTP request. Watch cookies get checked, tracking parameters get left behind, and cache decisions change the route. Learn the concepts, one station at a time.</p><div class="hero-actions"><a class="button primary" href="#journey">Board the request <span aria-hidden="true">↗</span></a><button class="quiet-button" data-jump="marketing">Show me the cleanup <span aria-hidden="true">→</span></button></div><p class="hero-meta"><span class="status-light"></span> NGINX → VARNISH 7.5 → PHP / MAGENTO <span class="meta-divider">/</span> ILLUSTRATIVE POLICIES. EXAMPLE TRAFFIC.</p></div>
+      <div class="ticket-scene" aria-hidden="true">
+        <svg class="hero-rails" viewBox="0 0 540 350"><path d="M-10 260H80Q115 260 115 225V95Q115 60 150 60H390Q430 60 430 100V270Q430 305 465 305H550"/><path d="M-10 273H88Q128 273 128 233V104Q128 73 159 73H380Q417 73 417 110V280Q417 318 456 318H550"/><circle cx="115" cy="190" r="8"/><circle cx="430" cy="140" r="8"/></svg>
+        <div class="boarding-ticket"><div class="ticket-top"><span>VARNISH EXPRESS</span><span>ONE ROUND TRIP ↗</span></div><div class="ticket-destinations"><div><small>DEPARTURE</small><b>Browser</b><span>HTTPS · :443</span></div><span class="ticket-arrow">⟶</span><div><small>VIA</small><b>Magento</b><span>PHP-FPM</span></div></div><div class="ticket-route"><i></i><span>Nginx</span><i></i><span>Varnish</span><i></i><span>Origin</span><i></i></div><div class="ticket-perforation"></div><div class="ticket-request"><span>PASSENGER 001</span><b>GET /products.html</b><div><span class="ticket-keep">color=green</span><span class="ticket-drop">utm_source=google</span></div></div><div class="ticket-bottom"><span class="barcode"></span><span>INSPECT · NORMALIZE · CACHE · DELIVER</span><b>01</b></div></div>
+        <div class="ticket-stamp"><span>NOTHING</span><b>black box</b><span>ABOUT IT</span></div>
+      </div>
+    </section>
+
+    <div class="section-label page-width"><div><span>01 /</span><h2>The request railway</h2></div><p>Scroll to travel. Pause to look inside. <span aria-hidden="true">↓</span></p></div>
+    <section class="journey page-width" id="journey" aria-label="Scroll-driven Varnish railway journey">
+      <div class="journey-board">
+        <div class="departure-board"><div class="service-selector"><label for="scenario-select">CHOOSE YOUR SERVICE</label><select id="scenario-select" aria-label="Request scenario"></select></div><div class="service-badge" id="service-badge">MISS</div><div class="board-tools"><button class="icon-button" id="restart" aria-label="Restart this journey" title="Restart">↺</button><button id="play" class="play-button" aria-pressed="false" aria-label="Play journey"><span id="play-icon" aria-hidden="true">▶</span><span id="play-label">Auto ride</span></button><label class="speed-control"><span class="sr-only">Playback speed</span><select id="speed"><option value="1">1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label></div></div>
+        <div id="group-nav" class="group-nav" aria-label="Journey chapters"></div>
+        <div class="rail-layout">
+          <div class="map-column">
+            <div class="map-header"><span><i class="status-light"></i> <b id="line-name">ALL-STOPS SERVICE</b></span><span class="sim-label">ILLUSTRATED TRAFFIC</span></div>
+            <div class="map-container">
+              <svg id="rail-map" viewBox="0 0 1000 485" role="group" aria-labelledby="map-title map-description">
+                <title id="map-title">Nginx, Varnish and PHP request railway</title><desc id="map-description">Choose a service and follow its request through each station.</desc>
+                <defs><pattern id="map-grid" width="25" height="25" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".7" fill="#52604d"/></pattern><filter id="train-glow" x="-100%" y="-150%" width="300%" height="400%"><feGaussianBlur stdDeviation="7"/></filter></defs>
+                <rect width="1000" height="485" fill="url(#map-grid)" opacity=".3"/>
+                <rect class="varnish-zone" x="385" y="58" width="550" height="175" rx="16"/><text id="zone-name" x="405" y="82" class="zone-label">VARNISH · THE CACHE CONTROL ZONE</text><text x="914" y="82" text-anchor="end" class="zone-label">:6081</text>
+                <g class="rail-track request-track"><path d="M80 145H860"/></g><g class="rail-sleepers"><path d="M80 145H860"/></g>
+                <g class="rail-track origin-track"><path d="M665 145V355H465"/></g><g class="rail-sleepers"><path d="M665 145V355H465"/></g>
+                <g class="rail-track response-track"><path d="M465 355H860V145M860 290H940M860 145H910Q940 145 940 175V400Q940 430 910 430H300Q270 430 270 400V145"/></g><g class="rail-sleepers"><path d="M465 355H860V145M860 290H940M860 145H910Q940 145 940 175V400Q940 430 910 430H300Q270 430 270 400V145"/></g>
+                <g class="map-labels"><text x="170" y="124">HTTPS</text><text x="365" y="124">HTTP</text><text x="750" y="267">HTTP</text><text x="562" y="336">FASTCGI</text><text x="573" y="451">THE RESPONSE LINE</text></g>
+                <path id="background-track" d="M860 145H665V355H465"/>
+                <path id="active-track" d="M80 145H270"/>
+                <g id="map-stations"></g>
+                <g class="map-note" transform="translate(58 330)"><text>THE ORIGIN</text><text y="20">Only when needed.</text><path d="M0 38h120m-6-5 6 5-6 5"/></g>
+                <g id="request-train" transform="translate(80 145)"><ellipse class="train-glow" cy="-10" rx="43" ry="20" filter="url(#train-glow)"/><rect class="train-wagon" x="-50" y="-19" width="27" height="17" rx="4"/><path class="train-link" d="M-23-7h7"/><path class="train-body" d="M-12-25h39q8 0 11 9l4 12H-17v-15q0-6 5-6z"/><rect class="train-window" x="22" y="-21" width="8" height="9" rx="2"/><circle class="train-wheel" cx="-8" cy="0" r="4"/><circle class="train-wheel" cx="28" cy="0" r="4"/><circle class="train-wheel" cx="-42" cy="0" r="3"/><circle class="train-wheel" cx="-28" cy="0" r="3"/><text id="train-label" x="2" y="-12" text-anchor="middle">GET</text></g>
+              </svg>
+            </div>
+            <div class="map-legend"><span><i class="legend-request"></i>Request line</span><span><i class="legend-origin"></i>Origin connection</span><span><i class="legend-response"></i>Response line</span></div>
+            <div class="local-platform"><div class="platform-heading"><span id="platform-name">DEPARTURE PLATFORM</span><span id="platform-count">01 / 02</span></div><div id="local-stops" class="local-stops"></div></div>
+            <div class="traveler-card"><div class="traveler-top"><span class="traveler-icon" aria-hidden="true">▤</span><span>ON BOARD RIGHT NOW</span><b id="packet-scope">req</b></div><div class="traveler-url"><b id="packet-method">GET</b><span id="packet-url">/products.html</span></div><div id="cargo-chips" class="cargo-chips"></div><div class="traveler-state"><span>CACHE STATE</span><b id="cache-state">No matching object</b></div></div>
+          </div>
+
+          <aside class="inspector" aria-label="Detailed station inspector">
+            <div class="inspector-heading"><div class="inspector-kicker"><span id="station-number">STATION 01 / 28</span><span id="hook-name">CLIENT</span></div><h3 id="station-title">Your request boards the train.</h3></div>
+            <div class="inspector-tabs" role="tablist" aria-label="Station detail view"><button role="tab" id="tab-changes" aria-controls="panel-changes" aria-selected="true" data-view="changes">What changes <span id="change-count">2</span></button><button role="tab" id="tab-headers" aria-controls="panel-headers" aria-selected="false" data-view="headers" tabindex="-1">Manifest</button></div>
+            <div class="inspector-body" id="panel-changes" role="tabpanel" aria-labelledby="tab-changes" tabindex="0"><p id="station-description" class="station-explanation"></p><div id="change-visual"></div><div id="changes-list"></div><div class="rule-notes"><h4>READ BETWEEN THE LINES</h4><ul id="station-facts"></ul></div></div>
+            <div class="inspector-body" id="panel-headers" role="tabpanel" aria-labelledby="tab-headers" tabindex="0" hidden><div class="manifest-toolbar"><span id="manifest-label">RELEVANT REQUEST FIELDS</span><div><button data-snapshot="before" aria-pressed="false">Before</button><button data-snapshot="after" aria-pressed="true">After</button></div></div><dl id="manifest"></dl><p class="manifest-note">A relevant snapshot, not every wire header. Cache attributes and FastCGI parameters are labeled separately.</p></div>
+          </aside>
+        </div>
+        <div class="ride-controls"><button class="stops-button" id="open-stations"><span aria-hidden="true">☷</span><span id="stop-counter">01 / 28 stops</span></button><label class="ride-progress"><span class="sr-only">Journey station</span><input id="station-progress" type="range" min="0" max="27" value="0" step="1" aria-label="Journey station"></label><span id="next-station-hint">NEXT: PUBLIC NGINX</span><button class="icon-button" id="previous" aria-label="Previous stop">←</button><button class="next-button" id="next">Next stop <span aria-hidden="true">→</span></button></div>
+        <div class="scroll-progress" aria-hidden="true"><div id="scroll-progress-fill"></div></div>
+      </div>
+    </section>
+    <div class="quick-stops page-width"><span>LOOKING FOR SOMETHING?</span><button data-jump="cookies">Cookie handling ↗</button><button data-jump="marketing">Marketing cleanup ↗</button><button data-jump="hash">Cache-key ingredients ↗</button><button data-jump="strip">Header removal ↗</button></div>
+    <noscript><p class="page-width noscript">Enable JavaScript to use the railway simulation and workbench. The field guide below remains readable.</p></noscript>
+
+    <section id="workbench" class="workbench-section page-width">
+      <div class="section-label"><div><span>02 /</span><h2>Get your hands on the rules</h2></div><p>A little input. A visible difference.</p></div>
+      <div class="workbench-intro"><h2>Don’t just watch it.<br><em>Try a different ticket.</em></h2><p>Change an input and explore an illustrative caching policy. These experiments teach the concepts without exposing a production configuration.</p></div>
+      <div class="workbench"><div class="workbench-tabs" role="tablist" aria-label="Configuration experiment"><button role="tab" id="lab-tab-tracking" aria-selected="true" aria-controls="lab-panel" data-lab="tracking">01 <span>Marketing parameters</span></button><button role="tab" id="lab-tab-cookies" aria-selected="false" aria-controls="lab-panel" data-lab="cookies" tabindex="-1">02 <span>Cookies & routing</span></button><button role="tab" id="lab-tab-encoding" aria-selected="false" aria-controls="lab-panel" data-lab="encoding" tabindex="-1">03 <span>Compression</span></button><button role="tab" id="lab-tab-key" aria-selected="false" aria-controls="lab-panel" data-lab="key" tabindex="-1">04 <span>Cache key</span></button><button role="tab" id="lab-tab-response" aria-selected="false" aria-controls="lab-panel" data-lab="response" tabindex="-1">05 <span>Response policy</span></button></div><div id="lab-panel" role="tabpanel" aria-labelledby="lab-tab-tracking"><div class="lab-inputs" id="lab-inputs"></div><div class="lab-results" id="lab-results" aria-live="polite" aria-atomic="true"></div></div><div class="workbench-foot"><span class="status-light"></span> Models the shown rules locally. No production requests. <button id="lab-reset">Reset example ↺</button></div></div>
+    </section>
+
+    <section id="field-guide" class="field-guide page-width"><div class="section-label"><div><span>03 /</span><h2>The station master’s notes</h2></div><p>The route is only half the story.</p></div>
+      <div class="guide-cards"><article><span class="guide-index">01 / THE COOKIE CARRIAGE</span><h3>Cookie comes in.<br>Set-Cookie goes out.</h3><p>Cookie carries client state toward the application. Set-Cookie carries instructions back to the browser. Collecting request fields, choosing cache variants, and deciding whether to retain a response cookie are separate policy decisions.</p><div class="guide-footer"><code>req.http.Cookie</code><span>≠</span><code>beresp.http.Set-Cookie</code></div></article><article><span class="guide-index">02 / TWO DIFFERENT CACHES</span><h3>Stored by Varnish.<br>Not by the browser.</h3><p>A cached object can retain its own freshness policy while the outgoing response receives different browser instructions. The example manifests show how delivery changes leave stored metadata intact.</p><div class="guide-footer"><span class="mini-pill">OBJECT · 3600s</span><span>≠</span><span class="mini-pill blue">BROWSER · NO-STORE</span></div></article><article><span class="guide-index">03 / THE GRACE CONNECTION</span><h3>Freshness expires.<br>The journey can continue.</h3><p>Grace is an allowance for serving a stale object, not extra freshness. This demo assigns 30 minutes of example grace and illustrates a shorter serving window when the origin is healthy. Actual windows depend on policy and object availability.</p><div class="grace-bar"><span>FRESH / TTL</span><span>STALE / GRACE</span></div></article></div>
+      <div class="branch-guide"><div><p class="eyebrow">BEFORE YOU EVEN REACH VARNISH</p><h3>A few tracks<br><em>go around the station.</em></h3><p>An edge server can choose another destination before cache processing begins. These are conceptual routing examples.</p></div><div class="branch-cards"><article><span>LOCAL STATIC FILE</span><h4>Browser → edge → file</h4><p>An edge server may serve an existing file directly. Missing files can follow a separately configured fallback route.</p></article><article><span>DIRECT APPLICATION ROUTE</span><h4>Browser → edge → application</h4><p>A selected application route can skip the cache service entirely. This differs from PASS, where Varnish still processes the transaction.</p></article><article><span>PLAIN HTTP</span><h4>Browser → edge → redirect → HTTPS</h4><p>An edge may redirect a plain HTTP request to HTTPS. The browser’s follow-up is a new request with its own journey.</p></article></div></div>
+      <div class="fine-print">
+        <details><summary>Why normalization matters <span>+</span></summary><p>Different URLs can describe the same content. This demo removes selected tracking parameters with a query-string parser, preserving business parameters and fragments. Matching is case-insensitive and empty tracking values are removed. These are illustrative choices, not production expressions.</p></details>
+        <details><summary>Built-in behavior and custom policy <span>+</span></summary><p>Varnish provides built-in handling for request eligibility, hashing, and responses. Custom policies can add decisions or return before built-in processing. Stock cookie and authorization behavior can therefore differ from an application-specific policy. The workbench labels its illustrative choices explicitly.</p></details>
+        <details><summary>Hit-for-miss is not hit-for-pass <span>+</span></summary><p>A cache miss with positive-lived uncacheable metadata can create hit-for-miss: a later cacheable response may replace it. Hit-for-pass explicitly bypasses lookup for subsequent matching requests during its lifetime. A transaction already in PASS does not become a reusable cached response.</p></details>
+        <details><summary>Order changes the outcome <span>+</span></summary><p>An early return skips later decisions. Compare the cookie, path, and authorization services to see how much processing happens before PASS. The response workbench similarly shows why an early privacy decision can preserve a cookie that a later processing step would otherwise remove.</p></details>
+        <details><summary>Where this simulation draws the line <span>+</span></summary><p>All domains, ports, request values, policies, ages, and transaction IDs are illustrative. The site contains no production VCL or Nginx configuration. It is a curated educational replay, not a VCL interpreter or live monitor. Background refresh is conceptual; no origin requests are made.</p></details>
+      </div>
+    </section>
+    <section class="closing page-width"><div><p class="eyebrow">END OF THE LINE. START OF UNDERSTANDING.</p><h2>It’s not magic.<br><em>It’s a sequence of decisions.</em></h2></div><a class="button primary" href="#journey">Take another journey <span>↗</span></a></section>
+  </main>
+  <footer class="page-width"><a class="brand" href="#top"><span class="line-marker">V</span><span>Varnish<span class="brand-serif">Express</span></span></a><p>An illustrative field guide to Nginx + Varnish 7.5 + Magento.</p><a href="https://varnish-cache.org/docs/7.5/" target="_blank" rel="noopener noreferrer">Varnish documentation ↗</a></footer>
+  <dialog id="stations-dialog"><div class="dialog-heading"><div><p class="eyebrow">THE COMPLETE ITINERARY</p><h2>Pick your next stop.</h2></div><button class="icon-button" data-close-dialog aria-label="Close station list">×</button></div><label class="station-search"><span class="sr-only">Filter stations</span><input id="station-search" placeholder="Find cookies, tracking, grace…" type="search"></label><div id="station-list"></div></dialog>
+  <div id="announcement" class="sr-only" role="status" aria-live="polite"></div>
+</body>
+</html>
